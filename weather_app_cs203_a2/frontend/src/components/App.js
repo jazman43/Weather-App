@@ -1,20 +1,20 @@
 import React, { Component } from "react";
-import { render } from "react-dom";
+import { createRoot } from "react-dom/client";
 
 
+//here we will change between each fucntion/ scetion 
+//this is where the side menu will live with each section having its own button
 export default class App extends Component{
     constructor(props){
         super(props);
     }
 
     render(){
-        return(
-            <H1>Welcome to React!!! dum</H1>
-        );
+        return <h1>Welcome to React!!! dum</h1>;
     }
 }
 
 
 const appDiv = document.getElementById("app");
-
-render(<App/>, appDiv);
+const root = createRoot(appDiv);
+root.render(<App/>);
