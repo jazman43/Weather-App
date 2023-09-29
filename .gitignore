@@ -160,5 +160,5 @@ cython_debug/
 #.idea/
 
 
-Django/my_venv
-weather-app-cs203-a2/node_modules
+Django
+weather_app_cs203_a2\frontend\node_modules
