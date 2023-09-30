@@ -10,6 +10,7 @@ body {
   height: 100%;
   margin: 0;
   padding: 0;
+  background-color: rgb(96, 130, 189);
 }
 
 #main {
@@ -29,6 +30,7 @@ body {
 a{
     text-decoration: none;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: large;
     color: white;
 }
 
@@ -42,19 +44,30 @@ Here we have side bar layout
 
 #sidebarID{
     width: 200px;
-    background-color: var(--BlueBackGround);
-    color: black;
+    height: 100%;
+    background-color: rgb(42, 107, 220);
     padding: 20px;
 }
 
 #sidebarID ,ul{
     list-style-type: none;
-    background: rgb(33, 33, 33);
-    padding: 20px;
+    
+    padding: 10px;
+}
+
+#sidebarID ,ul , li{
+    
+    padding: 10px;
+}
+
+li{
+    background-color: rgb(59, 59, 59);
+    padding-top: 10px;
+    margin-top: 15px;
 }
 
 #content{
     flex-grow: 1;
     padding: 20px;
-    background-color: chocolate;
+    background-color: var(--BlueBackGround);
 }
