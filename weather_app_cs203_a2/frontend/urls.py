@@ -4,5 +4,7 @@ from .views import index
 
 urlpatterns = [
     
-    path('', index)
+    path('', index),
+    path('rain-radar', index),
+    path('main-weather', index)
 ]

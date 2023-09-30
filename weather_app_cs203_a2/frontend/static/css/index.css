@@ -1,0 +1,60 @@
+/*
+Here is colour vars
+*/
+:root{
+    --BlueBackGround: rgb(42, 107, 220);
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#main {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+  }
+  
+#app {
+    width: 100%;
+    height: 100%;
+    display: flex;
+}
+
+a{
+    text-decoration: none;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+}
+
+/*
+Here we have side bar layout
+*/
+#container{
+    display: flex;
+    height: 100%;
+}
+
+#sidebarID{
+    width: 200px;
+    background-color: var(--BlueBackGround);
+    color: black;
+    padding: 20px;
+}
+
+#sidebarID ,ul{
+    list-style-type: none;
+    background: rgb(33, 33, 33);
+    padding: 20px;
+}
+
+#content{
+    flex-grow: 1;
+    padding: 20px;
+    background-color: chocolate;
+}
