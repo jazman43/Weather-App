@@ -1,16 +1,29 @@
 import React, { Component } from "react";
 import { createRoot } from "react-dom/client";
+import { BrowserRouter as Router, Switch, Route, Link, Outlet,
+    useNavigate,
+    Routes, } from "react-router-dom";
+
+//import each section
+
+import SideBarMenu from "./RainRadarWind";
 
 
-//here we will change between each fucntion/ scetion 
-//this is where the side menu will live with each section having its own button
 export default class App extends Component{
     constructor(props){
         super(props);
     }
 
+
+
+
+
     render(){
-        return <h1>Welcome to React!!! dum</h1>;
+        return (            
+            <Router>
+                <SideBarMenu/>
+            </Router>    
+        );
     }
 }
 
