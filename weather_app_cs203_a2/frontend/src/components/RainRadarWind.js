@@ -13,15 +13,65 @@ import FireDanger from "./FireDangerWind";
 import BBqForcast from "./BbqForcastWind";
 
 
+const apiKey = '6cd8596a9e075cc1718aeee820c8d1fa';
+const lon = 20.87;
+const lat = 10.88;
+const apiSiteCall = 'https://api.openweathermap.org/data/2.5/weather?lat=${10.90}&lon=${20.89}&appid=${6cd8596a9e075cc1718aeee820c8d1fa}'
+
+
 class RainRadar extends Component{
     constructor(props){
         super(props);
+        this.state = {
+          radarData: null,
+          loading: true,
+        };
     }
 
+
+    componentDidMount(){
+      fetch('https://api.openweathermap.org/data/2.5/weather?lat=${10.90}&lon=${20.89}&appid=${6cd8596a9e075cc1718aeee820c8d1fa}')
+        .then(Response => {
+          if(!Response.ok){
+            throw new Error('Network response was not ok fail fail !!');
+          }
+          return Response.json();
+        })
+        .then(data => 
+          {
+            this.setState({
+              radarData: data,
+              loading: false,
+            });
+          })
+          .catch(error =>{
+            console.error('Error fetching radar data: ', error);
+            this.setState({loading: false});
+          })
+    }
+
+
     render(){
+      const {radarData , loading} = this.state;
         return (
             <div id="rainRadarID">
                 <h1>Rain Radar</h1>
+                {
+                  loading ? (
+                    <p>loading radar data ....</p>
+                  ) : (
+                    radarData ? (
+                      <div>
+                        <p>Display the radar data..</p>
+                      </div>
+                    ) : (
+                      <p>No Radar data availble</p>
+                    )
+                  ) 
+                }
+                <div>
+                  <p>here we have a map with an rain over lay how this works idk lol </p>
+                </div>
             </div>
         );
     }
