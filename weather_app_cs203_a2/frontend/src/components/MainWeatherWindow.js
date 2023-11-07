@@ -1,18 +1,13 @@
-//here is where the main weather window will live 
-
 import React, { Component } from "react";
+import MainWeatherInfo from "./MainWeatherInfo";
 
-
-
-export default class MainWeather extends Component{
-    constructor(props){
-        super(props);
-    }
-
-    render(){
+export default class MainWeatherWindow extends Component {
+    render() {
         return (
             <div id="mainWeatherID">
-                <h1>main weather</h1>
+                <h1>Main Weather!!</h1>
+                <h2>Current Weather</h2>
+                <MainWeatherInfo />
             </div>
         );
     }
