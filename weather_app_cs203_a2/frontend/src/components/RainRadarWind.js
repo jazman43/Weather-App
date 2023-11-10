@@ -1,10 +1,10 @@
 //here is where the rain radar will live
-import React, { Component } from "react";
+import React, { Component, useEffect } from "react";
 
 import { BrowserRouter as Router, Switch, Route, Link, Outlet,
     useNavigate,
     Routes, } from "react-router-dom";
-
+import axios from 'axios';
 import MainWeather from "./MainWeatherWindow";
 import WeatherWarings from "./WeaterWaringsWind";
 import LaundryForcast from "./LaundryForcastWind";
@@ -13,46 +13,50 @@ import FireDanger from "./FireDangerWind";
 import BBqForcast from "./BbqForcastWind";
 
 
-const apiKey = '6cd8596a9e075cc1718aeee820c8d1fa';
-const lon = 20.87;
-const lat = 10.88;
-const apiSiteCall = 'https://api.openweathermap.org/data/2.5/weather?lat=${10.90}&lon=${20.89}&appid=${6cd8596a9e075cc1718aeee820c8d1fa}'
+
+  class RainRadar extends Component{
+      constructor(props){
+          super(props);
+          this.state = {
+            radarData: null,
+            loading: true,
+          };
+      }
+
+      componentDidMount() {
+        this.getWeatherData();
+      }
 
 
-class RainRadar extends Component{
-    constructor(props){
-        super(props);
-        this.state = {
-          radarData: null,
-          loading: true,
-        };
-    }
+      async getWeatherData() {
+          try{
+            const response = await axios.get('/api/weather/',{
+              params:{
+                city: 'Hamiltion',
+                country: 'NZ',
+              },
 
-
-    componentDidMount(){
-      fetch('https://api.openweathermap.org/data/2.5/weather?lat=${10.90}&lon=${20.89}&appid=${6cd8596a9e075cc1718aeee820c8d1fa}')
-        .then(Response => {
-          if(!Response.ok){
-            throw new Error('Network response was not ok fail fail !!');
-          }
-          return Response.json();
-        })
-        .then(data => 
-          {
+            });
+            console.log(response.data);
             this.setState({
-              radarData: data,
+              radarData: response.data,
               loading: false,
             });
-          })
-          .catch(error =>{
-            console.error('Error fetching radar data: ', error);
-            this.setState({loading: false});
-          })
-    }
+          }catch (error){
+            console.error('Error fetching weather data: ', error);
+            this.setState({
+              loading: false,
+            });
+          }
+      }    
+      
 
 
-    render(){
+    render() {      
+
       const {radarData , loading} = this.state;
+
+
         return (
             <div id="rainRadarID">
                 <h1>Rain Radar</h1>
@@ -71,11 +75,13 @@ class RainRadar extends Component{
                 }
                 <div>
                   <p>here we have a map with an rain over lay how this works idk lol </p>
+                                    
                 </div>
             </div>
         );
-    }
+    };
 }
+
 
 
 export default class SideBarMenu extends Component{
