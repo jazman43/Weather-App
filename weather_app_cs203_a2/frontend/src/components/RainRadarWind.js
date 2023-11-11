@@ -1,5 +1,5 @@
 //here is where the rain radar will live
-import React, { Component, useEffect } from "react";
+import React, { Component, useEffect, useState } from "react";
 
 import { BrowserRouter as Router, Switch, Route, Link, Outlet,
     useNavigate,
@@ -13,48 +13,98 @@ import FireDanger from "./FireDangerWind";
 import BBqForcast from "./BbqForcastWind";
 
 
-
+//current test will change to the rain radar soon
   class RainRadar extends Component{
       constructor(props){
           super(props);
           this.state = {
             radarData: null,
             loading: true,
+            city: 'Hamilton',
+            country: 'NZ',
+            countryError: "",
+            cityError: "",
+            
           };
+          this._isMounted = false;
       }
 
-      componentDidMount() {
-        this.getWeatherData();
-      }
+      handleCityChange = (e) =>{
+        this.setState({ city: e.target.value, cityError: ""});
+      };
+
+      handleCountryChange = (e) =>{
+        this.setState({ country: e.target.value, countryError: ""});
+      };
+
+      validateInput = () => {
+        let valid = true;
+        const { city, country } = this.state;
+
+        if (!city) {
+            this.setState({ cityError: "City is required" });
+            valid = false;
+        }
+
+        if (!country) {
+            this.setState({ countryError: "Country is required" });
+            valid = false;
+        }
+
+        return valid;
+    };
 
 
       async getWeatherData() {
           try{
-            const response = await axios.get('/api/weather/',{
-              params:{
-                city: 'Hamiltion',
-                country: 'NZ',
-              },
+            const {city, country} = this.state;
 
+            if(!this.validateInput()) return;
+
+            const response = await axios.get('/api/rainRadar/',{
+              params: {
+                city,
+                country,
+              },
+              
             });
-            console.log(response.data);
-            this.setState({
-              radarData: response.data,
-              loading: false,
-            });
+            
+            if (this._isMounted) {
+              console.log(response.data);
+              this.setState({
+                radarData: response.data,
+                loading: false,
+              });
+            }
+           
           }catch (error){
-            console.error('Error fetching weather data: ', error);
-            this.setState({
-              loading: false,
-            });
+            if(this._isMounted){
+              console.error('Error fetching weather data: ', error);
+              this.setState({
+                loading: false,
+              });
+            }
           }
       }    
       
+      componentDidMount() {
+        this._isMounted = true;
+        this.getWeatherData();
+      }
 
+      componentWillUnmount() {
+        this._isMounted = false;
+        console.log("Request canceled due to component unmount");
+      }
+
+      handleGetWeatherClick = () => {
+        this.setState({ loading: true }); // Set loading to true before fetching data
+        this.getWeatherData();
+      };
 
     render() {      
 
-      const {radarData , loading} = this.state;
+      const {radarData , loading ,cityError , countryError} = this.state;
 
 
         return (
@@ -67,9 +117,38 @@ import BBqForcast from "./BbqForcastWind";
                     radarData ? (
                       <div>
                         <p>Display the radar data..</p>
+                        {/**here we can show radar map */}
+                        <div>
+                          <label htmlFor="city">City: </label>
+                          <input
+                            type="text" 
+                            id="city" 
+                            placeholder="Enter city Name" 
+                            onChange={this.handleCityChange}
+                            />
+                            {cityError && <p className="error-message">{cityError}</p>}
+                        </div>
+                        <div>
+                          <label htmlFor="country">Country: </label>
+                          <input
+                            type="text" 
+                            id="country" 
+                            placeholder="Enter country Name" 
+                            onChange={this.handleCountryChange}
+                            />
+                            {countryError && <p className="error-message">{countryError}</p>}
+                        </div>
+                        <button onClick={this.handleGetWeatherClick}>Get Weather</button>
+                        <div id="weather-info">
+                          <p>City: {radarData.city}</p>
+                          <p>Temp: {radarData.temperature}*C</p>
+                        </div>
                       </div>
                     ) : (
-                      <p>No Radar data availble</p>
+                      <p>No Radar data availble
+                        {/**here we can show request error */}
+                      </p>
+                      
                     )
                   ) 
                 }
