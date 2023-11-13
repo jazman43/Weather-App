@@ -71,3 +71,17 @@ li{
     padding: 20px;
     background-color: var(--BlueBackGround);
 }
+
+
+/* main weather styles*/
+/* Add basic styling for input containers */
+.input-container {
+    margin: 10px;
+}
+
+
+/* Rain Radar styles*/
+
+#rainRadarBackground{
+    background-color: azure;
+}

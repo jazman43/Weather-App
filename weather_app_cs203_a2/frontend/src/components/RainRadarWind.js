@@ -1,10 +1,10 @@
 //here is where the rain radar will live
-import React, { Component } from "react";
+import React, { Component, useEffect, useState } from "react";
 
 import { BrowserRouter as Router, Switch, Route, Link, Outlet,
     useNavigate,
     Routes, } from "react-router-dom";
-
+import axios from 'axios';
 import MainWeather from "./MainWeatherWindow";
 import WeatherWarings from "./WeaterWaringsWind";
 import LaundryForcast from "./LaundryForcastWind";
@@ -13,19 +13,144 @@ import FireDanger from "./FireDangerWind";
 import BBqForcast from "./BbqForcastWind";
 
 
-class RainRadar extends Component{
-    constructor(props){
-        super(props);
-    }
+//current test will change to the rain radar soon
+  class RainRadar extends Component{
+      constructor(props){
+          super(props);
+          this.state = {
+            city: 'London',
+            country: 'GB',
+            radarImageUrl: null,
+            loading: true,
+                        
+          };
+          this._isMounted = false;
+      }
 
-    render(){
+      componentDidMount() {
+        this._isMounted = true;
+        this.getWeatherData();
+      }
+
+      handleCityChange = (e) =>{
+        this.setState({ city: e.target.value, cityError: ""});
+      };
+      
+      handleCountryChange = (e) =>{
+        this.setState({ country: e.target.value, countryError: ""});
+      };
+
+      async getWeatherData() {
+          try{
+            //const {city, country} = this.state;
+
+            
+
+            const response = await axios.get('/api/RainRadarWeather/',{
+              params: {
+                    city: this.state.city,
+                    country: this.state.country,
+                },
+                responseType: 'arraybuffer', 
+              
+            });
+
+            const arrayBufferView = new Uint8Array(response.data);
+            const blob = new Blob([arrayBufferView], { type: 'image/png' });
+            const radarImageUrl = URL.createObjectURL(blob);
+
+
+            
+            
+            
+            if (this._isMounted) {
+              
+              this.setState({
+                radarImageUrl,
+                loading: false,
+              });
+            }
+           
+          }catch (error){
+            if(this._isMounted){
+              console.error('Error fetching weather data: ', error);
+              this.setState({
+                loading: false,
+              });
+            }
+          }
+      }    
+      
+      
+
+      componentWillUnmount() {
+        this._isMounted = false;
+        console.log("Request canceled due to component unmount");
+      }
+
+      handleGetWeatherClick = () => {
+        this.setState({ loading: true }); // Set loading to true before fetching data
+        this.getWeatherData();
+      };
+
+    render() {      
+
+      const {radarImageUrl , loading ,cityError , countryError} = this.state;
+
+
         return (
             <div id="rainRadarID">
                 <h1>Rain Radar</h1>
+                {
+                  loading ? (
+                    <p>loading radar data ....</p>
+                  ) : (
+                    radarImageUrl ? (
+                      <div>
+                          <div>
+                              <label htmlFor="city">City: </label>
+                              <input
+                                  type="text"
+                                  id="city"
+                                  placeholder="Enter city name"
+                                  onChange={this.handleCityChange}
+                              />
+                              {/*cityError && <p className="error-message">{cityError}</p>*/}
+                          </div>
+                          <div>
+                              <label htmlFor="country">Country Code: </label>
+                              <input
+                                  type="text"
+                                  id="country"
+                                  placeholder="Enter country code (e.g., US)"
+                                  onChange={this.handleCountryChange}
+                              />
+                              {/*countryError && <p className="error-message">{countryError}</p>*/}
+                          </div>
+                            
+                          <button onClick={this.handleGetWeatherClick}>Get Weather</button>
+
+                        <div>
+                          <p>Display rain radar!..</p>
+                          <div id="rainRadarBackground">
+                            <img src={radarImageUrl} alt="Radar Map" />
+                          </div>
+                        </div>
+                      </div>
+                    ) : (
+                      <p>no data</p>                      
+                    )
+                  ) 
+                }
+                <div>
+                  <p>here we have a map with an rain over lay how this works idk lol </p>
+                                    
+                </div>
             </div>
         );
-    }
+    };
 }
+
 
 
 export default class SideBarMenu extends Component{
