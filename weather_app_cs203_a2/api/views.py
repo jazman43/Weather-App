@@ -82,28 +82,38 @@ class RainRadarWeather(APIView):
     serilizer = WeatherSerializer
 
     def get(self, request, fromat=None):
+        city = request.GET.get('city')
+        country = request.GET.get('country')
         
         zoom = 7
-        x = 12
-        y = 34
+        
 
         layer = 'precipitation_new'
 
-        if x and y:
-            url = f'https://api.openweathermap.org/map/{layer}/{zoom}/{x}/{y}.png?appid={api_key}'
+        if city and country:
+           
 
             try:
-                response = requests.get(url)
-                response.raise_for_status()
-                data = response.json()
+                weather_url = f'https://api.openweathermap.org/data/2.5/weather?q={city},{country}&appid={api_key}&units=metric'
 
-                if response.headers['Content-Type'] == 'image/png':
-                    # Return the image directly
-                    print("image sent")
-                    return HttpResponse(response.content, content_type='image/png')
-                    
-                else:
-                    return Response({'error': 'Unexpected response format'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)    
+                weather_response = requests.get(weather_url)
+                weather_response.raise_for_status()
+                weather_data = weather_response.json()
+
+                lat = int(weather_data['coord']['lat'])
+                lon = int(weather_data['coord']['lon'])
+                print("rain radar   " , weather_data)
+                
+                #x coord overlay image left/right first number y coord over lay image up down
+                radar_url = f'https://tile.openweathermap.org/map/{layer}/{zoom}/124/79.png?appid={api_key}'
+
+
+                response = requests.get(radar_url)
+                response.raise_for_status()
+                
+                 
+                return HttpResponse(response.content, content_type=response.headers['content-type'])
+                   
 
             
             except requests.RequestException as e:

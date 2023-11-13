@@ -18,61 +18,55 @@ import BBqForcast from "./BbqForcastWind";
       constructor(props){
           super(props);
           this.state = {
-            radarData: null,
+            city: 'London',
+            country: 'GB',
+            radarImageUrl: null,
             loading: true,
-            city: 'Hamilton',
-            country: 'NZ',
-            countryError: "",
-            cityError: "",
-            
+                        
           };
           this._isMounted = false;
+      }
+
+      componentDidMount() {
+        this._isMounted = true;
+        this.getWeatherData();
       }
 
       handleCityChange = (e) =>{
         this.setState({ city: e.target.value, cityError: ""});
       };
-
+      
       handleCountryChange = (e) =>{
         this.setState({ country: e.target.value, countryError: ""});
       };
 
-      validateInput = () => {
-        let valid = true;
-        const { city, country } = this.state;
-
-        if (!city) {
-            this.setState({ cityError: "City is required" });
-            valid = false;
-        }
-
-        if (!country) {
-            this.setState({ countryError: "Country is required" });
-            valid = false;
-        }
-
-        return valid;
-    };
-
-
       async getWeatherData() {
           try{
-            const {city, country} = this.state;
+            //const {city, country} = this.state;
 
-            if(!this.validateInput()) return;
+            
 
-            const response = await axios.get('/api/rainRadar/',{
+            const response = await axios.get('/api/RainRadarWeather/',{
               params: {
-                city,
-                country,
-              },
+                    city: this.state.city,
+                    country: this.state.country,
+                },
+                responseType: 'arraybuffer', 
               
             });
+
+            const arrayBufferView = new Uint8Array(response.data);
+            const blob = new Blob([arrayBufferView], { type: 'image/png' });
+            const radarImageUrl = URL.createObjectURL(blob);
+
+
+            
+            
             
             if (this._isMounted) {
-              console.log(response.data);
+              
               this.setState({
-                radarData: response.data,
+                radarImageUrl,
                 loading: false,
               });
             }
@@ -87,10 +81,7 @@ import BBqForcast from "./BbqForcastWind";
           }
       }    
       
-      componentDidMount() {
-        this._isMounted = true;
-        this.getWeatherData();
-      }
+      
 
       componentWillUnmount() {
         this._isMounted = false;
@@ -104,7 +95,7 @@ import BBqForcast from "./BbqForcastWind";
 
     render() {      
 
-      const {radarData , loading ,cityError , countryError} = this.state;
+      const {radarImageUrl , loading ,cityError , countryError} = this.state;
 
 
         return (
@@ -114,41 +105,40 @@ import BBqForcast from "./BbqForcastWind";
                   loading ? (
                     <p>loading radar data ....</p>
                   ) : (
-                    radarData ? (
+                    radarImageUrl ? (
                       <div>
-                        <p>Display the radar data..</p>
-                        {/**here we can show radar map */}
+                          <div>
+                              <label htmlFor="city">City: </label>
+                              <input
+                                  type="text"
+                                  id="city"
+                                  placeholder="Enter city name"
+                                  onChange={this.handleCityChange}
+                              />
+                              {/*cityError && <p className="error-message">{cityError}</p>*/}
+                          </div>
+                          <div>
+                              <label htmlFor="country">Country Code: </label>
+                              <input
+                                  type="text"
+                                  id="country"
+                                  placeholder="Enter country code (e.g., US)"
+                                  onChange={this.handleCountryChange}
+                              />
+                              {/*countryError && <p className="error-message">{countryError}</p>*/}
+                          </div>
+                            
+                          <button onClick={this.handleGetWeatherClick}>Get Weather</button>
+
                         <div>
-                          <label htmlFor="city">City: </label>
-                          <input
-                            type="text" 
-                            id="city" 
-                            placeholder="Enter city Name" 
-                            onChange={this.handleCityChange}
-                            />
-                            {cityError && <p className="error-message">{cityError}</p>}
-                        </div>
-                        <div>
-                          <label htmlFor="country">Country: </label>
-                          <input
-                            type="text" 
-                            id="country" 
-                            placeholder="Enter country Name" 
-                            onChange={this.handleCountryChange}
-                            />
-                            {countryError && <p className="error-message">{countryError}</p>}
-                        </div>
-                        <button onClick={this.handleGetWeatherClick}>Get Weather</button>
-                        <div id="weather-info">
-                          <p>City: {radarData.city}</p>
-                          <p>Temp: {radarData.temperature}*C</p>
+                          <p>Display rain radar!..</p>
+                          <div id="rainRadarBackground">
+                            <img src={radarImageUrl} alt="Radar Map" />
+                          </div>
                         </div>
                       </div>
                     ) : (
-                      <p>No Radar data availble
-                        {/**here we can show request error */}
-                      </p>
-                      
+                      <p>no data</p>                      
                     )
                   ) 
                 }
