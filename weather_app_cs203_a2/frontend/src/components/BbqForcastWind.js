@@ -11,7 +11,7 @@ export default class BBqForcast extends Component{
     render(){
         return (
             <div id="bbq ForcastID">
-                <h1>BBq Forcast</h1>
+                <h1>BBQ dfgdfgdfgdfgdfgForcast</h1>
             </div>
         );
     }
