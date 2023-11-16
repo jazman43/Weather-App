@@ -103,7 +103,12 @@ export default class MainWeatherWindow extends Component {
                 <h2>Current Weather</h2>
                 {
                     loading ? (
-                        <p>Loading.....</p>
+                      <div>
+                        <p>
+                          loading....
+                        </p>
+                        <div className="spinner"></div>
+                      </div>
                     ) : ( weatherData ? (
                         <div>
                             <div>
