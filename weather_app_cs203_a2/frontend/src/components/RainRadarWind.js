@@ -5,16 +5,11 @@ import { BrowserRouter as Router, Switch, Route, Link, Outlet,
     useNavigate,
     Routes, } from "react-router-dom";
 import axios from 'axios';
-import MainWeather from "./MainWeatherWindow";
-import WeatherWarings from "./WeaterWaringsWind";
-import LaundryForcast from "./LaundryForcastWind";
-import IdealFinishing from "./IdealFinishingWind";
-import FireDanger from "./FireDangerWind";
-import BBqForcast from "./BbqForcastWind";
+
 
 
 //current test will change to the rain radar soon
-  class RainRadar extends Component{
+export default class RainRadar extends Component{
       constructor(props){
           super(props);
           this.state = {
@@ -32,13 +27,7 @@ import BBqForcast from "./BbqForcastWind";
         this.getWeatherData();
       }
 
-      handleCityChange = (e) =>{
-        this.setState({ city: e.target.value, cityError: ""});
-      };
       
-      handleCountryChange = (e) =>{
-        this.setState({ country: e.target.value, countryError: ""});
-      };
 
       async getWeatherData() {
           try{
@@ -81,7 +70,13 @@ import BBqForcast from "./BbqForcastWind";
           }
       }    
       
+      handleCityChange = (e) =>{
+        this.setState({ city: e.target.value, cityError: ""});
+    };
       
+    handleCountryChange = (e) =>{
+      this.setState({ country: e.target.value, countryError: ""});
+    };
 
       componentWillUnmount() {
         this._isMounted = false;
@@ -95,43 +90,52 @@ import BBqForcast from "./BbqForcastWind";
 
     render() {      
 
-      const {radarImageUrl , loading ,cityError , countryError} = this.state;
+      const {radarImageUrl , loading ,city , country} = this.state;
 
 
         return (
             <div id="rainRadarID">
+                <div>
+                  <button>
+                    <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">{/*<!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->*/}<path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
+                  </button>                  
+                </div>
                 <h1>Rain Radar</h1>
                 {
                   loading ? (
-                    <p>loading radar data ....</p>
+                    <div>
+                      <p>loading....</p>
+                      <div className="spinner"></div>
+                    </div>
+                    
                   ) : (
                     radarImageUrl ? (
                       <div>
                           <div>
-                              <label htmlFor="city">City: </label>
+                            <label htmlFor="city">City: </label>
                               <input
-                                  type="text"
-                                  id="city"
-                                  placeholder="Enter city name"
-                                  onChange={this.handleCityChange}
+                                type="text"
+                                id="city"
+                                placeholder="Enter city name"
+                                onChange={this.handleCityChange}
                               />
-                              {/*cityError && <p className="error-message">{cityError}</p>*/}
+                            {/*cityError && <p className="error-message">{cityError}</p>*/}
                           </div>
                           <div>
-                              <label htmlFor="country">Country Code: </label>
+                            <label htmlFor="country">Country Code: </label>
                               <input
-                                  type="text"
-                                  id="country"
-                                  placeholder="Enter country code (e.g., US)"
-                                  onChange={this.handleCountryChange}
+                                type="text"
+                                id="country"
+                                placeholder="Enter country code (e.g., US)"
+                                onChange={this.handleCountryChange}
                               />
                               {/*countryError && <p className="error-message">{countryError}</p>*/}
                           </div>
-                            
+                        
                           <button onClick={this.handleGetWeatherClick}>Get Weather</button>
-
                         <div>
                           <p>Display rain radar!..</p>
+                          <h2>Weather in {city}, {country}</h2>
                           <div id="rainRadarBackground">
                             <img src={radarImageUrl} alt="Radar Map" />
                           </div>
@@ -152,7 +156,7 @@ import BBqForcast from "./BbqForcastWind";
 }
 
 
-
+/*
 export default class SideBarMenu extends Component{
     constructor(props){
         super(props);
@@ -160,50 +164,11 @@ export default class SideBarMenu extends Component{
 
     render(){
         return (
-          <div id="container">
-            <div id="sidebarId">
-              <ul>
-                {/* Create links to navigate to different pages */}
-                <li>
-                  <Link to="/rain-radar">Rain Radar</Link>
-                </li>
-                <li>
-                  <Link to="/main-weather">Weather</Link>
-                </li>
-                <li>
-                  <Link to="/weather-warings">Weather Warings</Link>
-                </li>
-                <li>
-                  <Link to="/laundry-forcast">Laundry Forcast</Link>
-                </li>
-                <li>
-                  <Link to="/ideal-finishing">Ideal Finishing</Link>
-                </li>
-                <li>
-                  <Link to="/fire-danger">Fire Danger</Link>
-                </li>
-                <li>
-                  <Link to="/bbq-forcast">BBq Forcast</Link>
-                </li>
-
-                {/* Add more links for additional pages as needed */}
-              </ul>
-            </div>
-
-            <div id="content">
-              {/* Define routes for your pages */}
-              <Routes>
-                <Route exact path="/rain-radar" element={<RainRadar />} />
-                <Route exact path="/main-weather" element={<MainWeather />} />
-                <Route exact path="/weather-warings" element={<WeatherWarings />} />
-                <Route exact path="/laundry-forcast" element={<LaundryForcast />} />
-                <Route exact path="/ideal-finishing" element={<IdealFinishing />} />
-                <Route exact path="/fire-danger" element={<FireDanger />} />
-                <Route exact path="/bbq-forcast" element={<BBqForcast />} />
-                {/* Add more routes for additional pages as needed */}
-              </Routes>
-            </div>
-          </div>
+          
         );
     }
 }
+*/
+
+
+
