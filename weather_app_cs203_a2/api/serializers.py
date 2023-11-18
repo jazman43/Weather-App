@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import weatherData
+from .models import weatherData, weatherWarningData
 
 class WeatherSerializer(serializers.ModelSerializer):
 
@@ -16,3 +16,12 @@ class WeatherSerializer(serializers.ModelSerializer):
     def get_weather_icon_url(self,obj):
             icon_code =obj.weather_icon
             return f'https://openweathermap.org/img/wn/{icon_code}@2x.png'
+
+        
+
+
+class WeatherWarningSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = weatherWarningData
+        fields = ('city', 'country', 'alerts_event', 'alerts_description')
+

@@ -13,8 +13,8 @@ export default class RainRadar extends Component{
       constructor(props){
           super(props);
           this.state = {
-            city: 'London',
-            country: 'GB',
+            city: 'Auckland',
+            country: 'NZ',
             radarImageUrl: null,
             loading: true,
                         
@@ -31,7 +31,7 @@ export default class RainRadar extends Component{
 
       async getWeatherData() {
           try{
-            //const {city, country} = this.state;
+            const {city, country} = this.state;
 
             
 
