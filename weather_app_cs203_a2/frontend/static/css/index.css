@@ -3,7 +3,9 @@ Here is colour vars
 */
 :root{
     --BlueBackGround: rgb(42, 107, 220);
-    
+    --ButtonBackgroundHover: rgba(118, 91, 139, 0.805);
+    --buttonBackground: rgb(128, 195, 114);
+    --weatherBoxbackground: rgba(145, 144, 144, 0.9);
 }
 
 html,
@@ -12,6 +14,7 @@ body {
   margin: 0;
   padding: 0;
   background-color: rgb(96, 130, 189);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 #main {
@@ -32,7 +35,17 @@ a{
     text-decoration: none;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: large;
+    text-align: center;
     color: white;
+    border: 1px solid #4CAF50;
+    border-radius: 5px;
+    display: inline-block;
+    padding: 5% 25%;
+    
+}
+
+a:hover{
+    background-color: cadetblue;
 }
 
 /*
@@ -78,6 +91,48 @@ li{
 /* Add basic styling for input containers */
 .input-container {
     margin: 10px;
+}
+
+.mainWeatherInfoBox {
+    margin: auto;
+    box-shadow: 3px 3px 6px rgb(40,40,40);
+    border: 15px solid rgba(139, 169, 210, 0.8);
+    border-radius: 20px;
+    padding: 15px;
+    background-color: var(--weatherBoxbackground);
+    text-align: center;
+    content: "";
+    clear: both;
+}
+
+#mainWeatherTitle{
+    text-align: center;
+}
+
+
+.getWeatherButton{
+    text-align: center;
+    border: none;
+    font-weight: bold;
+    border-radius: 15px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 20px auto;
+    padding: 10px 15px;
+    background-color:var(--buttonBackground);
+
+}
+
+.getWeatherButton:hover{
+    background-color: var(--ButtonBackgroundHover);
+    box-shadow: 0 0 6px rgb(150, 181, 235);
+}
+
+.mainWeatherInputFields{
+    text-align: center;
+
 }
 
 

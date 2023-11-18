@@ -83,6 +83,8 @@ class WeatherView(APIView):
             return Response({'error': 'City and country praamesters are required'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
         
 
+        
+
 
 
 
