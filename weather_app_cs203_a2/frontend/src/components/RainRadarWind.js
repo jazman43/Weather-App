@@ -100,18 +100,18 @@ export default class RainRadar extends Component{
                     <svg xmlns="http://www.w3.org/2000/svg" height="1em" viewBox="0 0 448 512">{/*<!--! Font Awesome Free 6.4.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license (Commercial License) Copyright 2023 Fonticons, Inc. -->*/}<path d="M0 96C0 78.3 14.3 64 32 64H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32C14.3 128 0 113.7 0 96zM0 256c0-17.7 14.3-32 32-32H416c17.7 0 32 14.3 32 32s-14.3 32-32 32H32c-17.7 0-32-14.3-32-32zM448 416c0 17.7-14.3 32-32 32H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H416c17.7 0 32 14.3 32 32z"/></svg>
                   </button>                  
                 </div>
-                <h1>Rain Radar</h1>
+                <h1 id="mainWeatherTitle">Rain Radar</h1>
                 {
                   loading ? (
-                    <div>
+                    <div className="mainWeatherInputFields">
                       <p>loading....</p>
                       <div className="spinner"></div>
                     </div>
                     
                   ) : (
                     radarImageUrl ? (
-                      <div>
-                          <div>
+                      <div >
+                          <div className="mainWeatherInputFields">
                             <label htmlFor="city">City: </label>
                               <input
                                 type="text"
@@ -121,7 +121,7 @@ export default class RainRadar extends Component{
                               />
                             {/*cityError && <p className="error-message">{cityError}</p>*/}
                           </div>
-                          <div>
+                          <div className="mainWeatherInputFields">
                             <label htmlFor="country">Country Code: </label>
                               <input
                                 type="text"
@@ -132,9 +132,9 @@ export default class RainRadar extends Component{
                               {/*countryError && <p className="error-message">{countryError}</p>*/}
                           </div>
                         
-                          <button onClick={this.handleGetWeatherClick}>Get Weather</button>
-                        <div>
-                          <p>Display rain radar!..</p>
+                          <button className="getWeatherButton" onClick={this.handleGetWeatherClick}>Get Weather</button>
+                        <div className="mainWeatherInfoBox">
+                          
                           <h2>Weather in {city}, {country}</h2>
                           <div id="rainRadarBackground">
                             <img src={radarImageUrl} alt="Radar Map" />
@@ -146,10 +146,7 @@ export default class RainRadar extends Component{
                     )
                   ) 
                 }
-                <div>
-                  <p>here we have a map with an rain over lay how this works idk lol </p>
-                                    
-                </div>
+                
             </div>
         );
     };

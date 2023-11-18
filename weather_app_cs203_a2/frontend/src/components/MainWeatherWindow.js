@@ -99,8 +99,7 @@ export default class MainWeatherWindow extends Component {
 
         return (
             <div id="mainWeatherID">
-                <h1>Main Weather!!</h1>
-                <h2>Current Weather</h2>
+                <h1 id="mainWeatherTitle">Current Weather</h1>                
                 {
                     loading ? (
                       <div>
@@ -110,8 +109,8 @@ export default class MainWeatherWindow extends Component {
                         <div className="spinner"></div>
                       </div>
                     ) : ( weatherData ? (
-                        <div>
-                            <div>
+                        <div id="mainWeatherDataBox">
+                            <div className="mainWeatherInputFields">
                                 <label htmlFor="city">City: </label>
                                 <input
                                     type="text"
@@ -121,7 +120,7 @@ export default class MainWeatherWindow extends Component {
                                 />
                                 {cityError && <p className="error-message">{cityError}</p>}
                             </div>
-                            <div>
+                            <div className="mainWeatherInputFields">
                                 <label htmlFor="country">Country Code: </label>
                                 <input
                                     type="text"
@@ -132,13 +131,14 @@ export default class MainWeatherWindow extends Component {
                                 {countryError && <p className="error-message">{countryError}</p>}
                             </div>
                             
-                            <button onClick={this.handleGetWeatherClick}>Get Weather</button>
+                            <button className="getWeatherButton" onClick={this.handleGetWeatherClick}>Get Weather</button>
                             <div id="weather-info">
                                 {weatherData && (
-                                    <div>
+                                    <div className="mainWeatherInfoBox">
                                         <h2>Weather in {weatherData.city}, {weatherData.country}</h2>
                                         <p>Temperature: {weatherData.temperature}°C</p>
                                         <p>Weather: {weatherData.weather_description}</p>
+                                        <img src={weatherData.weather_icon_url} alt="Weather Icon" style={{width: '50px', height: '50px'}}/>
                                         <p>Humidity: {weatherData.humidity}%</p>
                                         <p>Wind Speed: {weatherData.wind_speed} m/s</p>
                                     </div>
