@@ -24,3 +24,8 @@ class weatherData(models.Model):
    timestamp = models.DateTimeField(auto_now_add=True)
 
 
+class weatherWarningData(models.Model):
+   city = models.CharField(max_length=255)
+   country = models.CharField(max_length=255)
+   alerts_event = models.CharField(max_length=255)
+   alerts_description = models.CharField(max_length=255)
