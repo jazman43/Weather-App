@@ -95,16 +95,16 @@ export default class WeatherWarings extends Component{
 
         return (
             <div id="weatherWaringsID">
-                <h1>Weather Warings</h1>
+                <h1 id="mainWeatherTitle">Weather Warings</h1>
                 {
                     loading ? (
-                      <div>
+                      <div className="mainWeatherInputFields">
                         <p>loading....</p>
                         <div className="spinner"></div>
                       </div>
                     ) : ( weatherData ? (
                         <div>
-                            <div>
+                            <div className="mainWeatherInputFields">
                                 <label htmlFor="city">City: </label>
                                 <input
                                     type="text"
@@ -114,7 +114,7 @@ export default class WeatherWarings extends Component{
                                 />
                                 {cityError && <p className="error-message">{cityError}</p>}
                             </div>
-                            <div>
+                            <div className="mainWeatherInputFields">
                                 <label htmlFor="country">Country Code: </label>
                                 <input
                                     type="text"
@@ -125,10 +125,10 @@ export default class WeatherWarings extends Component{
                                 {countryError && <p className="error-message">{countryError}</p>}
                             </div>
                             
-                            <button onClick={this.handleGetWeatherClick}>Get Weather</button>
+                            <button className="getWeatherButton" onClick={this.handleGetWeatherClick}>Get Alerts</button>
                             <div id="weather-info">
                               {weatherData.alerts_event ? (
-                                <div>
+                                <div className="mainWeatherInfoBox">
                                   <h2>Weather in {weatherData.city}, {weatherData.country}</h2>
                                   <p>event: {weatherData.alerts_event}</p>
                                   <p>alert description: {weatherData.alerts_description}</p>

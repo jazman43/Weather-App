@@ -132,7 +132,7 @@ export default class RainRadar extends Component{
                               {/*countryError && <p className="error-message">{countryError}</p>*/}
                           </div>
                         
-                          <button className="getWeatherButton" onClick={this.handleGetWeatherClick}>Get Weather</button>
+                          <button className="getWeatherButton" onClick={this.handleGetWeatherClick}>Get Radar</button>
                         <div className="mainWeatherInfoBox">
                           
                           <h2>Weather in {city}, {country}</h2>
