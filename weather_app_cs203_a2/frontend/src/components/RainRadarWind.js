@@ -13,7 +13,7 @@ export default class RainRadar extends Component{
       constructor(props){
           super(props);
           this.state = {
-            city: 'Hamilton',
+            city: 'Auckland',
             country: 'NZ',
             radarImageUrl: null,
             loading: true,

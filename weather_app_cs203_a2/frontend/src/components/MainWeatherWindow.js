@@ -9,7 +9,7 @@ export default class MainWeatherWindow extends Component {
         this.state = {
           weatherData: null,
           loading: true,
-          city: 'Hamilton',
+          city: 'Auckland',
           country: 'NZ',
           countryError: "",
           cityError: "",

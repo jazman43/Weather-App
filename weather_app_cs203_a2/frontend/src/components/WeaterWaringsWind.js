@@ -9,7 +9,7 @@ export default class WeatherWarings extends Component{
         this.state = {
           weatherData: null,
           loading: true,
-          city: 'Hamilton',
+          city: 'Auckland',
           country: 'NZ',
           cityError: "",
           countryError: "",
