@@ -11,8 +11,10 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.views import APIView
 from rest_framework.response import Response
 
-from .serializers import WeatherSerializer
-from .models import weatherData
+from .serializers import WeatherSerializer , WeatherWarningSerializer
+from .models import weatherData, weatherWarningData
+
+
 
 from PIL import Image
 from io import BytesIO
@@ -42,10 +44,24 @@ class WeatherView(APIView):
         print(city)
         if  city and country:       
 
-            url = f'https://api.openweathermap.org/data/2.5/weather?q={city},{country}&appid={api_key}&units=metric'
+            
 
             
             try:
+                geo_url = f"http://api.openweathermap.org/geo/1.0/direct?q={city},{country}&limit=5&appid=6cd8596a9e075cc1718aeee820c8d1fa"
+                geo_responce = requests.get(geo_url)
+                geo_responce.raise_for_status()
+                geo_data = geo_responce.json()
+
+            
+
+                lon = geo_data[0]['lon']
+                lat = geo_data[0]['lat']
+
+
+
+                url = f'https://api.openweathermap.org/data/2.5/weather?lat={lat}&lon={lon}&appid={api_key}&units=metric'
+
                 response = requests.get(url)
                 response.raise_for_status()
                 data = response.json()
@@ -81,6 +97,8 @@ class WeatherView(APIView):
 
         else:
             return Response({'error': 'City and country praamesters are required'}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        
+
         
 
 
@@ -161,22 +179,17 @@ class RainRadarWeather(APIView):
            
 
             try:
-                weather_url = f'https://api.openweathermap.org/data/2.5/weather?q={city},{country}&appid={api_key}&units=metric'
+                geo_url = f"http://api.openweathermap.org/geo/1.0/direct?q={city},{country}&limit=5&appid=6cd8596a9e075cc1718aeee820c8d1fa"
+                geo_responce = requests.get(geo_url)
+                geo_responce.raise_for_status()
+                geo_data = geo_responce.json()
 
-                weather_response = requests.get(weather_url)
-                weather_response.raise_for_status()
-                weather_data = weather_response.json()
+            
 
-                #this is for the google maps 
-                lat = weather_data['coord']['lat']
-                lon = weather_data['coord']['lon']
+                lon = geo_data[0]['lon']
+                lat = geo_data[0]['lat']
+
                 
-                weather_instance, created = weatherData.objects.update_or_create(
-                city=weather_data['name'],
-                country=weather_data['sys']['country'],
-                )
-
-
                 #this is for our radar image (0,0 top left corner)
                 world_coord, pixel_coord, tile_coord = calculate_world_coordinate((lat, lon))
                 print(pixel_coord)
@@ -218,3 +231,54 @@ class RainRadarWeather(APIView):
 
 
 
+class WeatherWarnings(APIView):
+    serilizer = WeatherWarningSerializer
+
+
+    def get(self, request, fromat=None):
+        city = request.GET.get('city')
+        country = request.GET.get('country')
+
+
+
+        try:
+            geo_url = f"http://api.openweathermap.org/geo/1.0/direct?q={city},{country}&limit=5&appid=6cd8596a9e075cc1718aeee820c8d1fa"
+            geo_responce = requests.get(geo_url)
+            geo_responce.raise_for_status()
+            geo_data = geo_responce.json()
+
+            
+
+            lon = geo_data[0]['lon']
+            lat = geo_data[0]['lat']
+
+            #print(lat)
+
+            warnings_url = f"https://api.openweathermap.org/data/3.0/onecall?lat={lat}&lon={lon}&exclude=current,minutely,hourly,daily&appid=6cd8596a9e075cc1718aeee820c8d1fa&units=metric"
+            warnings_responce = requests.get(warnings_url)
+            warnings_responce.raise_for_status()
+            warnings_data = warnings_responce.json()
+
+            print(warnings_data)
+            if 'alerts' in warnings_data:
+            # If there are alerts, update or create the database entry
+                warnings_instance, created = weatherWarningData.objects.update_or_create(
+                city=warnings_data['name'],
+                country=warnings_data['sys']['country'],
+                defaults={
+                    'alerts_event': warnings_data['alerts'][0]['event'],
+                    'alerts_description': warnings_data['alerts'][0]['description'],
+                }
+            )
+
+            # Serialize the data
+                serializer = WeatherWarningSerializer(warnings_instance)
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            else:
+                # If there are no alerts, send a response with city and country names
+                
+                return Response({'message': f'No alerts for {city}, {country}'}, status=status.HTTP_200_OK)
+
+
+        except requests.RequestException as e:
+            print(f"error fetching weather data: {e}")
