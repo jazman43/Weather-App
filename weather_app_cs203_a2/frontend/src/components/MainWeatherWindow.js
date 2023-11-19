@@ -13,7 +13,6 @@ export default class MainWeatherWindow extends Component {
           country: 'NZ',
           countryError: "",
           cityError: "",
-          
         };
         this._isMounted = false;
     }
@@ -65,11 +64,15 @@ export default class MainWeatherWindow extends Component {
               weatherData: response.data,
               loading: false,
             });
+            if (localStorage.getItem("weatherData")){
+              alert("Weather data was previously saved for offline use. Please tick the offline checkbox again to save updated data.")
+            }
           }
          
         }catch (error){
           if(this._isMounted){
-            console.error('Error fetching weather data: ', error);
+            console.error('Error fetching weather data. Checking local storage: ', error);
+            this.loadLocalData();
             this.setState({
               loading: false,
             });
@@ -92,6 +95,28 @@ export default class MainWeatherWindow extends Component {
         this.getWeatherData();
       };
 
+      saveWeatherToFile = () => {
+        
+        if (offlineToggle.checked == true){
+          console.log("Checkbox checked");
+          alert("Weather now saved for offline use");
+          localStorage.setItem('weatherData', JSON.stringify(this.state.weatherData));
+        }
+        else{
+          console.log("Checkbox un-checked");
+          localStorage.removeItem('weatherData');
+        }
+      }
+
+      loadLocalData() {
+        const localdata = localStorage.getItem("weatherData");
+        this.state.weatherData = JSON.parse(localdata);
+        alert("The Page was unable to fetch updated weather data. Currently using previuosly saved data");
+      }
+
+      
+
+      
     render() {
 
         const {weatherData , loading ,cityError , countryError} = this.state;
@@ -132,6 +157,11 @@ export default class MainWeatherWindow extends Component {
                             </div>
                             
                             <button className="getWeatherButton" onClick={this.handleGetWeatherClick}>Get Weather</button>
+                            <div> 
+                            <input type="checkbox" id="offlineToggle" name="offlineToggle" onClick={this.saveWeatherToFile}></input>
+                            <label for="offlineToggle">Save weather info for offline use</label>
+                            </div>
+                            
                             <div id="weather-info">
                                 {weatherData && (
                                     <div className="mainWeatherInfoBox">
