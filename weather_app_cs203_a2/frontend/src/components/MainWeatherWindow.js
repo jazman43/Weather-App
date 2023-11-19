@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import axios from 'axios';
 
-
+//the component to display current weather
 export default class MainWeatherWindow extends Component {
 
     constructor(props){
@@ -9,6 +9,7 @@ export default class MainWeatherWindow extends Component {
         this.state = {
           weatherData: null,
           loading: true,
+          //defult location
           city: 'Auckland',
           country: 'NZ',
           countryError: "",
@@ -17,7 +18,7 @@ export default class MainWeatherWindow extends Component {
         this._isMounted = false;
     }
 
-
+      //for handling the change to city and current state 
     handleCityChange = (e) =>{
         this.setState({ city: e.target.value, cityError: ""});
     };
@@ -26,7 +27,7 @@ export default class MainWeatherWindow extends Component {
       this.setState({ country: e.target.value, countryError: ""});
     };
 
-
+    //error checking for city and country
     validateInput = () => {
         let valid = true;
         const { city, country } = this.state;
@@ -44,20 +45,24 @@ export default class MainWeatherWindow extends Component {
         return valid;
     };
 
+    //getting data from backend
     async getWeatherData() {
         try{
           const {city, country} = this.state;
     
           if(!this.validateInput()) return;
-    
+          
           const response = await axios.get('/api/weather/',{
             params: {
               city,
               country,
+              cityError: "",
+              countryError: "",
             },
             
           });
           
+          //set data and stop loading 
           if (this._isMounted) {
             console.log(response.data);
             this.setState({
@@ -69,6 +74,7 @@ export default class MainWeatherWindow extends Component {
             }
           }
          
+        //display error if cant find correct data stop loading   
         }catch (error){
           if(this._isMounted){
             console.error('Error fetching weather data. Checking local storage: ', error);
@@ -81,19 +87,20 @@ export default class MainWeatherWindow extends Component {
     }
     
     componentDidMount() {
-        this._isMounted = true;
-        this.getWeatherData();
-      }
+      this._isMounted = true;
+      this.getWeatherData();
+    }
       
-      componentWillUnmount() {
-        this._isMounted = false;
-        console.log("Request canceled due to component unmount");
-      }
-      
-      handleGetWeatherClick = () => {
-        this.setState({ loading: true }); // Set loading to true before fetching data
-        this.getWeatherData();
-      };
+    componentWillUnmount() {
+      this._isMounted = false;
+      console.log("Request canceled due to component unmount");
+    }
+    
+    //re loads page if new location is inputed 
+    handleGetWeatherClick = () => {
+      this.setState({ loading: true }); // Set loading to true before fetching data
+      this.getWeatherData();
+    };
 
       saveWeatherToFile = () => {
         
@@ -125,7 +132,7 @@ export default class MainWeatherWindow extends Component {
         return (
             <div id="mainWeatherID">
                 <h1 id="mainWeatherTitle">Current Weather</h1>                
-                {
+                {/** if loading display loading text and a spinner animaion */
                     loading ? (
                       <div>
                         <p>
@@ -133,8 +140,9 @@ export default class MainWeatherWindow extends Component {
                         </p>
                         <div className="spinner"></div>
                       </div>
-                    ) : ( weatherData ? (
+                    ) : ( weatherData ? (/**when loading is complete and data reseved from backend */
                         <div id="mainWeatherDataBox">
+                          {/** display input feilds*/}
                             <div className="mainWeatherInputFields">
                                 <label htmlFor="city">City: </label>
                                 <input
@@ -163,7 +171,7 @@ export default class MainWeatherWindow extends Component {
                             </div>
                             
                             <div id="weather-info">
-                                {weatherData && (
+                                {weatherData && (/**display weather date sent from backed */
                                     <div className="mainWeatherInfoBox">
                                         <h2>Weather in {weatherData.city}, {weatherData.country}</h2>
                                         <p>Temperature: {weatherData.temperature}°C</p>
