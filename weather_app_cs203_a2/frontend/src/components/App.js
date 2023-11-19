@@ -15,7 +15,7 @@ import RainRadar from "./RainRadarWind";
 
 
 
-
+//side menu component everthing render from here
 export default class App extends Component{
     constructor(props){
         super(props);

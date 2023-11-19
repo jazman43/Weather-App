@@ -12,7 +12,7 @@ class WeatherSerializer(serializers.ModelSerializer):
                   'weather_description', 'weather_icon', 'timestamp', 'weather_icon_url')
         
 
-
+        #get icon image 
     def get_weather_icon_url(self,obj):
             icon_code =obj.weather_icon
             return f'https://openweathermap.org/img/wn/{icon_code}@2x.png'

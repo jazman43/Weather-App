@@ -2,7 +2,7 @@
 import React, { Component } from "react";
 import axios from "axios";
 
-
+//this component is for the weather alerts 
 export default class WeatherWarings extends Component{
     constructor(props){
         super(props);
@@ -47,11 +47,13 @@ export default class WeatherWarings extends Component{
           const {city, country} = this.state;
     
           if(!this.validateInput()) return;
-    
+          //get backend data
           const response = await axios.get('/api/WeatherWarnings/',{
             params: {
-              city : this.state.city,
-              country: this.state.country,
+              city,
+              country,
+              cityError: "",
+              countryError: "",
             },
             
           });
@@ -96,7 +98,7 @@ export default class WeatherWarings extends Component{
         return (
             <div id="weatherWaringsID">
                 <h1>Weather Warings</h1>
-                {
+                {/** if loading display loading text and a spinner animaion */
                     loading ? (
                       <div>
                         <p>loading....</p>
@@ -104,6 +106,7 @@ export default class WeatherWarings extends Component{
                       </div>
                     ) : ( weatherData ? (
                         <div>
+                          {/** display input feilds*/}
                             <div>
                                 <label htmlFor="city">City: </label>
                                 <input
@@ -127,13 +130,13 @@ export default class WeatherWarings extends Component{
                             
                             <button onClick={this.handleGetWeatherClick}>Get Weather</button>
                             <div id="weather-info">
-                              {weatherData.alerts_event ? (
+                              {weatherData.alerts_event ? (/**display alert data if there is an alert */
                                 <div>
                                   <h2>Weather in {weatherData.city}, {weatherData.country}</h2>
                                   <p>event: {weatherData.alerts_event}</p>
                                   <p>alert description: {weatherData.alerts_description}</p>
                                 </div>
-                              ) : (
+                              ) : (/** display no alerts here messege */
                                 <p>{weatherData.message}</p>
                               )}
                             </div>
